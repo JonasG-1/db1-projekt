@@ -2,26 +2,14 @@ package View;
 
 import javax.swing.*;
 
-import DAO.DatabaseConnection;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
 
 public class ProjectView extends JFrame {
     private JTextArea resultTextArea;
     private Component rigidArea;
-
-
-
-    private final String connectionString = "jdbc:oracle:thin:@172.22.160.22:1521:xe";
-    private static Connection con;
-
-
 
     public ProjectView() {
         setTitle("Database Query GUI");
@@ -37,7 +25,7 @@ public class ProjectView extends JFrame {
         JPanel buttons = new JPanel();
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.PAGE_AXIS));
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 1; i <= 5; i++) {
             Button button = new Button("Abfrage " + i);
             buttons.add(button);
 
