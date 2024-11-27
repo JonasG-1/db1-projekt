@@ -1,22 +1,49 @@
 package View;
 
-import javax.smartcardio.Card;
 import javax.swing.*;
+
+import DAO.DatabaseConnection;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class ProjectView extends JFrame {
     private JTextArea resultTextArea;
     private Component rigidArea;
+
+
+
+     private final String connectionString = "jdbc:oracle:thin:@172.22.160.22:1521:xe";
+    private static Connection con;
+
+
 
     public ProjectView() {
         setTitle("Database Query GUI");
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+
+        
+        try {
+            con = DriverManager.getConnection(connectionString, "C##FBPOOL87", "rWsJFsBJKN4dL662Y4UE");
+            System.out.println("Datenbankverbindung erfolgreich hergestellt!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Fehler beim Herstellen der Datenbankverbindung:\n" + e.getMessage(),
+                    "Datenbankfehler",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        
+
+
 
         // Create components
         resultTextArea = new JTextArea();
@@ -71,6 +98,6 @@ public class ProjectView extends JFrame {
             public void run() {
                 new ProjectView().setVisible(true);
             }
-        });
-    }
+        });        
+    }   
 }
