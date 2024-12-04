@@ -18,7 +18,7 @@ public class Request {
         try (Connection connection = connectionFactory.createConnection()) {
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("[ConnectionFactory] Failed to establish connection: \n" + e.getMessage());
         }
 
         return "";

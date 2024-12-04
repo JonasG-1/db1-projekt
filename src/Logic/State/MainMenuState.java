@@ -18,12 +18,12 @@ public class MainMenuState extends ConsoleState {
         return "";
     }
     private String chooseDepthSearch() {
-
+        consoleApp.setConsoleAppState(SingletonStateCollection.getInstance(SearchMenuState.class));
         return "";
     }
 
     private String chooseInsertTupel() {
-
+        consoleApp.setConsoleAppState(SingletonStateCollection.getInstance(InsertMenuState.class));
         return "";
     }
 
@@ -47,7 +47,7 @@ public class MainMenuState extends ConsoleState {
     public String getMenuOptions() {
 
         return """
-                ---------------------------------------------------
+                ---------------------------------------------------------------------------------------------------------------------------------------------------------
                 Hauptmenü - Bitte Befehl auswählen
                 
                 
@@ -55,7 +55,7 @@ public class MainMenuState extends ConsoleState {
                 2    - Tupel zur rekursiven Beziehung hinzufügen
                 3    - Tiefensuche mit Tupel ausführen
                 exit - Beenden
-                ---------------------------------------------------
+                ---------------------------------------------------------------------------------------------------------------------------------------------------------
                 """;
     }
 }
