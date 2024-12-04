@@ -14,36 +14,48 @@ public class MainMenuState extends ConsoleState {
     }
 
     private String chooseRequestCommand() {
-        consoleApp.setConsoleAppState(new RequestMenuState(consoleApp));
+        consoleApp.setConsoleAppState(SingletonStateCollection.getInstance(RequestMenuState.class));
+        return "";
+    }
+    private String chooseDepthSearch() {
+
         return "";
     }
 
-    private String processWrongInput(String args) {
-        return "Kein Befehl erkannt: " + args;
+    private String chooseInsertTupel() {
+
+        return "";
+    }
+
+    private String exitConsoleApp() {
+        System.exit(0);
+        return "";
     }
 
     @Override
     public String processInput(String input) {
         return switch (input) {
             case "1" -> chooseRequestCommand();
+            case "2" -> chooseInsertTupel();
+            case "3" -> chooseDepthSearch();
+            case "exit" -> exitConsoleApp();
             default -> processWrongInput(input);
         };
     }
 
     @Override
     public String getMenuOptions() {
-        String output = """
+
+        return """
                 ---------------------------------------------------
-                Hauptmenu - Bitte Befehl auswählen
+                Hauptmenü - Bitte Befehl auswählen
                 
                 
-                1    - Abfragen Auswählen
+                1    - Abfragen auswählen
                 2    - Tupel zur rekursiven Beziehung hinzufügen
                 3    - Tiefensuche mit Tupel ausführen
                 exit - Beenden
                 ---------------------------------------------------
                 """;
-
-        return output;
     }
 }
