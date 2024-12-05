@@ -28,4 +28,18 @@ public class OracleConnectionFactory extends ConnectionFactory {
         }
         return con;
     }
+
+    protected boolean closeConnectionObject(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+                System.out.println("[ConnectionFactory] Connection closed successfully.");
+                return true;
+            } catch (SQLException e) {
+                System.err.println("[ConnectionFactory] Failed to close the connection: " + e.getMessage());
+                return false;
+            }
+        }
+        return false;
+    }
 }

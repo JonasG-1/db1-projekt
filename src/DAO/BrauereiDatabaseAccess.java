@@ -9,22 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BrauereiDatabaseAccess {
+    static Connection connection;
+    static OracleConnectionFactory connectionFactory;
 
     public static Connection initializeConnection() {
-        OracleConnectionFactory connectionFactory = new OracleConnectionFactory();
-        Connection connection = connectionFactory.createConnection();
+        connectionFactory = new OracleConnectionFactory();
+        connection = connectionFactory.createConnection();
         return connection;
     }
 
     public static void closeConnection(Connection connection) {
-        if (connection != null) {
-            try {
-                connection.close();
-                System.out.println("Connection closed successfully.");
-            } catch (SQLException e) {
-                System.err.println("Failed to close the connection: " + e.getMessage());
-            }
-        }
+        connectionFactory.closeConnection(connection);
     }
 
     public static String abfrage1() {
