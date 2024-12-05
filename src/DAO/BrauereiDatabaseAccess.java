@@ -19,7 +19,11 @@ public class BrauereiDatabaseAccess {
     }
 
     public static void closeConnection(Connection connection) {
-        connectionFactory.closeConnection(connection);
+        if(connectionFactory.closeConnection(connection)){
+            connection = null;
+            connectionFactory = null;
+        }
+
     }
 
     public static String abfrage1() {
