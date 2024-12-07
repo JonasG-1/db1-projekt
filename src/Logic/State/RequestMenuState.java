@@ -37,7 +37,6 @@ public class RequestMenuState extends ConsoleState {
                 ---------------------------------------------------------------------------------------------------------------------------------------------------------
                 Abfrage auswählen
                 
-                
                 1    - 1. Gib alle Zutaten der Biersorte "Pils" aus.
                 2    - 2. Gib alle Standort IDs aus, von Standorten in denen Fässer Lagern
                 3    - 3. [Rekursiv] Gib die Verpackungsnamen der Verpakungen aus, welche die Behälter der Biersorte "Pils" enthalten.

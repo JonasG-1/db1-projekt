@@ -50,7 +50,6 @@ public class MainMenuState extends ConsoleState {
                 ---------------------------------------------------------------------------------------------------------------------------------------------------------
                 Hauptmenü - Bitte Befehl auswählen
                 
-                
                 1    - Abfragen auswählen
                 2    - Tupel zur rekursiven Beziehung hinzufügen
                 3    - Tiefensuche mit Tupel ausführen

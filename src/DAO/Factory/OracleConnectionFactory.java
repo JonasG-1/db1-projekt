@@ -21,9 +21,9 @@ public class OracleConnectionFactory extends ConnectionFactory {
         Connection con;
         try {
             con = DriverManager.getConnection(connectionString, user, pass);
-            System.out.println("[ConnectionFactory] Connection established");
+            System.out.println("\n[ConnectionFactory] Connection established\n");
         } catch (SQLException e) {
-            System.out.println("[ConnectionFactory] Failed to establish connection: \n" + e.getMessage());
+            System.out.println("\n[ConnectionFactory] Failed to establish connection: \n" + e.getMessage() + "\n");
             throw new RuntimeException();
         }
         return con;
@@ -33,10 +33,10 @@ public class OracleConnectionFactory extends ConnectionFactory {
         if (connection != null) {
             try {
                 connection.close();
-                System.out.println("[ConnectionFactory] Connection closed successfully.");
+                System.out.println("\n[ConnectionFactory] Connection closed successfully.\n");
                 return true;
             } catch (SQLException e) {
-                System.err.println("[ConnectionFactory] Failed to close the connection: " + e.getMessage());
+                System.err.println("\n[ConnectionFactory] Failed to close the connection: " + e.getMessage() + "\n");
                 return false;
             }
         }
