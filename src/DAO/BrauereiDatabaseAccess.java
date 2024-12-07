@@ -21,13 +21,7 @@ public class BrauereiDatabaseAccess {
         try (Connection connection = connectionFactory.createConnection()) {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = statement.executeQuery
-                    ("Select biersorte.biersorte_id, Biersorte_name, zutat.zutat_name" +
-                    "From Biersorte " +
-                    "Right Outer Join biersorte_zutat" +
-                    "on Biersorte.Biersorte_ID = Biersorte_Zutat.Biersorte_ID" +
-                    "Left OUTER JOIN zutat" +
-                    "on biersorte_zutat.zutat_id = zutat.zutat_id" +
-                    "where biersorte.biersorte_name = 'Pils';");
+                    ("Select biersorte.biersorte_id, Biersorte_name, zutat.zutat_name From Biersorte Inner Join biersorte_zutat on Biersorte.Biersorte_ID = Biersorte_Zutat.Biersorte_ID INNER JOIN zutat on biersorte_zutat.zutat_id = zutat.zutat_id where biersorte.biersorte_name = 'Pils'");
             return createListFromResultSet(rs);
         } catch (SQLException e) {
             System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
@@ -40,7 +34,7 @@ public class BrauereiDatabaseAccess {
 
         try (Connection connection = connectionFactory.createConnection()) {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = statement.executeQuery("SELECT * FROM Biersorte");
+            ResultSet rs = statement.executeQuery("SELECT standort.standort_id From Standort inner JOIN lager on lager.standort_id = standort.standort_id inner JOIN lagerabschnitt on lagerabschnitt.lager_id = lager.lager_id inner JOIN lagerbestand_lagerabschnitt on lagerbestand_lagerabschnitt.lagerabschnitt_id = lagerabschnitt.lagerabschnitt_id inner Join lagerbestand on lagerbestand_lagerabschnitt.lagerbestand_id = lagerbestand.lagerbestand_id inner JOIN behaelter on lagerbestand.behaelter_id = behaelter.behaelter_id where behaelter.behaeltertyp = 'Fass'");
             return createListFromResultSet(rs);
         } catch (SQLException e) {
             System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
