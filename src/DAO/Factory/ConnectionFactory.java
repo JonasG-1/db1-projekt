@@ -9,10 +9,6 @@ public abstract class ConnectionFactory {
         return createGetConnectionObject();
     }
 
-    public boolean closeConnection(Connection connection) {
-        return closeConnectionObject(connection);
-    }
-
     protected abstract Connection createGetConnectionObject();
-    protected abstract boolean closeConnectionObject(Connection connection);
+
 }

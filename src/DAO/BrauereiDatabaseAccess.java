@@ -1,87 +1,130 @@
 package DAO;
 
+import DAO.Factory.ConnectionFactory;
 import DAO.Factory.OracleConnectionFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class BrauereiDatabaseAccess {
-    static Connection connection;
-    static OracleConnectionFactory connectionFactory;
+    private ConnectionFactory connectionFactory;
 
-    public static Connection initializeConnection() {
-        connectionFactory = new OracleConnectionFactory();
-        connection = connectionFactory.createConnection();
-        return connection;
+    public BrauereiDatabaseAccess() {
+        this.connectionFactory = new OracleConnectionFactory();
     }
 
-    public static void closeConnection(Connection connection) {
-        if(connectionFactory.closeConnection(connection)){
-            connection = null;
-            connectionFactory = null;
+
+    public List<String[]> abfrage1()  {
+
+        try (Connection connection = connectionFactory.createConnection()) {
+            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = statement.executeQuery
+                    ("Select biersorte.biersorte_id, Biersorte_name, zutat.zutat_name" +
+                    "From Biersorte " +
+                    "Right Outer Join biersorte_zutat" +
+                    "on Biersorte.Biersorte_ID = Biersorte_Zutat.Biersorte_ID" +
+                    "Left OUTER JOIN zutat" +
+                    "on biersorte_zutat.zutat_id = zutat.zutat_id" +
+                    "where biersorte.biersorte_name = 'Pils';");
+            return createListFromResultSet(rs);
+        } catch (SQLException e) {
+            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
         }
 
+        return new ArrayList<>();
     }
 
-    public static String abfrage1()  {
+    public List<String[]> abfrage2()  {
 
-        Connection connection = initializeConnection();
-
-
-
-        try {
+        try (Connection connection = connectionFactory.createConnection()) {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = statement.executeQuery("SELECT * FROM Biersorte");
-            printResultSet(rs);
-        }catch (SQLException e) {
-            System.out.println("Abfrage vehgeschlagen:" + e.getMessage());
-        }finally {
-            closeConnection(connection);
+            return createListFromResultSet(rs);
+        } catch (SQLException e) {
+            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
         }
 
-        return "";
+        return new ArrayList<>();
     }
 
+    public List<String[]> abfrage3()  {
 
-    // VOn Chatgpt
-    public static void printResultSet(ResultSet resultSet) {
+        try (Connection connection = connectionFactory.createConnection()) {
+            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = statement.executeQuery("SELECT * FROM Biersorte");
+            return createListFromResultSet(rs);
+        } catch (SQLException e) {
+            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
+        }
+
+        return new ArrayList<>();
+    }
+
+    public List<String[]> abfrage4()  {
+
+        try (Connection connection = connectionFactory.createConnection()) {
+            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = statement.executeQuery("SELECT * FROM Biersorte");
+            return createListFromResultSet(rs);
+        } catch (SQLException e) {
+            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
+        }
+
+        return new ArrayList<>();
+    }
+
+    public List<String[]> abfrage5()  {
+
+        try (Connection connection = connectionFactory.createConnection()) {
+            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = statement.executeQuery("SELECT * FROM Biersorte");
+            return createListFromResultSet(rs);
+        } catch (SQLException e) {
+            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
+        }
+
+        return new ArrayList<>();
+    }
+
+    private List<String[]> createListFromResultSet(ResultSet resultSet) {
+        List<String[]> result = new ArrayList<>();
+
         if (resultSet == null) {
             System.out.println("Das ResultSet ist leer oder null.");
-            return;
+            return result;
         }
 
         try {
             ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
+            int columns = metaData.getColumnCount();
 
-            // Spaltenüberschriften ausgeben
-            StringBuilder header = new StringBuilder();
-            StringBuilder separator = new StringBuilder();
+            String[] columnNames = getColumnNames(metaData);
+            result.add(columnNames);
 
-            for (int i = 1; i <= columnCount; i++) {
-                String columnName = metaData.getColumnName(i);
-                header.append(String.format("%-20s", columnName));
-                separator.append("--------------------");
-            }
-            System.out.println(header);
-            System.out.println(separator);
-
-            // Datenzeilen ausgeben
-            boolean hasRows = false;
-            while (resultSet.next()) {
-                hasRows = true;
-                for (int i = 1; i <= columnCount; i++) {
-                    System.out.print(resultSet.getString(i) + "\t");
+            while(resultSet.next()){
+                String[] row = new String[columns];
+                for(int i = 1; i <= columns; i++){
+                    row[i - 1] = resultSet.getString(i);
                 }
-                System.out.println();
+                result.add(row);
             }
-
-            if (!hasRows) {
-                System.out.println("Keine Daten im ResultSet.");
-            }
-
         } catch (SQLException e) {
-            System.out.println("Fehler beim Verarbeiten des ResultSets: " + e.getMessage());
+            System.out.println("[BrauereiDatabaseAccess] Das ResultSet konnte nicht (vollständig) gelesen werden.\n" + e.getMessage());
         }
+
+        return result;
+    }
+
+    private String[] getColumnNames(ResultSetMetaData metaData) throws SQLException {
+        int columns = metaData.getColumnCount();
+
+        String[] columnNames = new String[columns];
+        for (int i = 1; i <= columns; i++) {
+            columnNames[i - 1] = metaData.getColumnName(i);
+        }
+        return columnNames;
     }
 
 }

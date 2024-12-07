@@ -1,16 +1,21 @@
 package Logic.State;
 
 import DAO.BrauereiDatabaseAccess;
+import Logic.RequestService;
 import View.ConsoleApp;
 
+/**
+ * State Objekt, dass ... macht
+ *
+ *
+ */
 public class RequestMenuState extends ConsoleState {
 
-    public RequestMenuState(ConsoleApp consoleApp) {
-        super(consoleApp);
-    }
+    RequestService requestService;
 
-    private String startRequest(String input) {
-        return "";
+    public RequestMenuState(ConsoleApp consoleApp, RequestService requestService) {
+        super(consoleApp);
+        this.requestService = requestService;
     }
 
     private String exitToMainMenu() {
@@ -21,11 +26,11 @@ public class RequestMenuState extends ConsoleState {
     @Override
     public String processInput(String input) {
         return switch (input) {
-            case "1" -> BrauereiDatabaseAccess.abfrage1();
-            case "2" -> processWrongInput(input);
-            case "3" -> processWrongInput(input);
-            case "4" -> processWrongInput(input);
-            case "5" -> processWrongInput(input);
+            case "1" -> requestService.startRequest(1);
+            case "2" -> requestService.startRequest(2);
+            case "3" -> requestService.startRequest(3);
+            case "4" -> requestService.startRequest(4);
+            case "5" -> requestService.startRequest(5);
             case "exit" -> exitToMainMenu();
             default -> processWrongInput(input);
         };
