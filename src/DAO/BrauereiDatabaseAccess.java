@@ -43,15 +43,21 @@ public class BrauereiDatabaseAccess {
 
     public List<String[]> abfrage3() {
 
-        try (Connection connection = connectionFactory.createConnection()) {
-            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = statement.executeQuery("SELECT * FROM Biersorte");
-            return createListFromResultSet(rs);
-        } catch (SQLException e) {
-            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
-        }
+        String sql = "WITH Verpackung_Hierarchie (VERPACKUNG_ID, VERPACKUNG_NAME, SUB_VERPACKUNG_ID) AS (" +
+                "SELECT V.VERPACKUNG_ID, V.VERPACKUNG_NAME, V.SUB_VERPACKUNG_ID " +
+                "FROM BIERSORTE BS " +
+                "INNER JOIN BEHAELTER B ON BS.BIERSORTE_ID = B.BIERSORTE_ID " +
+                "INNER JOIN LAGERBESTAND L ON B.BEHAELTER_ID = L.BEHAELTER_ID " +
+                "INNER JOIN VERPACKUNG V ON L.VERPACKUNG_ID = V.VERPACKUNG_ID " +
+                "WHERE BS.BIERSORTE_NAME = 'Pils' " +
+                "UNION ALL " +
+                "SELECT V.VERPACKUNG_ID, V.VERPACKUNG_NAME, V.SUB_VERPACKUNG_ID " +
+                "FROM VERPACKUNG V " +
+                "INNER JOIN Verpackung_Hierarchie VH ON V.SUB_VERPACKUNG_ID = VH.VERPACKUNG_ID) " +
+                "SELECT DISTINCT VERPACKUNG_ID, VERPACKUNG_NAME " +
+                "FROM Verpackung_Hierarchie";
 
-        return new ArrayList<>();
+        return executeSqlAndGetResultList(sql);
     }
 
     public List<String[]> abfrage4() {

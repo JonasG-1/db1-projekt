@@ -8,9 +8,15 @@ public class SearchMenuState extends ConsoleState{
         super(consoleApp);
     }
 
+
+
     @Override
     public String processInput(String input) {
-        return "";
+        return switch (input) {
+            case "1" -> "";
+            case "exit" -> exitToMainMenu();
+            default -> processWrongInput(input);
+        };
     }
 
     @Override
