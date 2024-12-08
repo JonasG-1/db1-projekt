@@ -42,7 +42,7 @@ public class RequestService {
 
 
     public String insertVerpackungTuple(Verpackung verpackung) {
-        int result = brauereiDatabaseAccess.insertVerpackungTuple(verpackung);
+        long result = brauereiDatabaseAccess.insertVerpackungTuple(verpackung);
         return result != -1 ?
                 String.format("Die Verpackung wurde erfolgreich mit der Id %s eingefügt", result)
                 : "Die Verpackung wurde nicht eingefügt.";

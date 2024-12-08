@@ -7,7 +7,6 @@ import DAO.Model.Verpackung;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class BrauereiDatabaseAccess {
     private final ConnectionFactory connectionFactory;
@@ -139,12 +138,12 @@ public class BrauereiDatabaseAccess {
      * @param verpackung
      * @return Id der eingefügten Verpackung oder -1, wenn nichts eingefügt wurde oder ein Fehler aufgetreten ist.
      */
-    public int insertVerpackungTuple(Verpackung verpackung) {
+    public long insertVerpackungTuple(Verpackung verpackung) {
         String sql = "INSERT INTO Verpackung (VERPACKUNG_NAME, SUB_VERPACKUNG_ID, ANZAHL_EINHEITEN) VALUES (?, ?, ?)";
-        int result = -1;
+        long result = -1;
 
         try (Connection connection = connectionFactory.createConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"VERPACKUNG_ID"})) {
 
             preparedStatement.setString(1, verpackung.getVerpackungName());
             if (verpackung.getSubVerpackungId() == 0) {
@@ -159,12 +158,12 @@ public class BrauereiDatabaseAccess {
             if (rowsAffected > 0) {
                 try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        result = generatedKeys.getInt(1);
+                        result = generatedKeys.getLong(1);
                     }
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Fehler bei der Abfrage: " + e);
+            System.out.println("Fehler beim Einfügen: " + e);
         }
         return result;
     }
