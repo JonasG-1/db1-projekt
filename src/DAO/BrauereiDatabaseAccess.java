@@ -9,19 +9,43 @@ import java.util.List;
 import java.util.Optional;
 
 public class BrauereiDatabaseAccess {
-    private ConnectionFactory connectionFactory;
+    private final ConnectionFactory connectionFactory;
 
     public BrauereiDatabaseAccess() {
         this.connectionFactory = new OracleConnectionFactory();
     }
 
 
-    public List<String[]> abfrage1()  {
+    public List<String[]> abfrage1() {
+        try (Connection connection = connectionFactory.createConnection()) {
+            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = statement.executeQuery
+                    ("SELECT BIERSORTE.BIERSORTE_ID, BIERSORTE_NAME, ZUTAT.ZUTAT_NAME " +
+                            "FROM BIERSORTE " +
+                            "INNER JOIN BIERSORTE_ZUTAT ON BIERSORTE.BIERSORTE_ID = BIERSORTE_ZUTAT.BIERSORTE_ID " +
+                            "INNER JOIN ZUTAT ON BIERSORTE_ZUTAT.ZUTAT_ID = ZUTAT.ZUTAT_ID " +
+                            "WHERE BIERSORTE.BIERSORTE_NAME = 'Pils'");
+            return createListFromResultSet(rs);
+        } catch (SQLException e) {
+            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
+        }
+
+        return new ArrayList<>();
+    }
+
+    public List<String[]> abfrage2() {
 
         try (Connection connection = connectionFactory.createConnection()) {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = statement.executeQuery
-                    ("Select biersorte.biersorte_id, Biersorte_name, zutat.zutat_name From Biersorte Inner Join biersorte_zutat on Biersorte.Biersorte_ID = Biersorte_Zutat.Biersorte_ID INNER JOIN zutat on biersorte_zutat.zutat_id = zutat.zutat_id where biersorte.biersorte_name = 'Pils'");
+                    ("SELECT STANDORT.STANDORT_ID " +
+                            "FROM STANDORT " +
+                            "INNER JOIN LAGER ON LAGER.STANDORT_ID = STANDORT.STANDORT_ID " +
+                            "INNER JOIN LAGERABSCHNITT ON LAGERABSCHNITT.LAGER_ID = LAGER.LAGER_ID " +
+                            "INNER JOIN LAGERBESTAND_LAGERABSCHNITT ON LAGERBESTAND_LAGERABSCHNITT.LAGERABSCHNITT_ID = LAGERABSCHNITT.LAGERABSCHNITT_ID " +
+                            "INNER JOIN LAGERBESTAND on LAGERBESTAND_LAGERABSCHNITT.LAGERBESTAND_ID = LAGERBESTAND.LAGERBESTAND_ID " +
+                            "INNER JOIN BEHAELTER on LAGERBESTAND.BEHAELTER_ID = BEHAELTER.BEHAELTER_ID " +
+                            "WHERE BEHAELTER.BEHAELTERTYP = 'Fass'");
             return createListFromResultSet(rs);
         } catch (SQLException e) {
             System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
@@ -30,20 +54,7 @@ public class BrauereiDatabaseAccess {
         return new ArrayList<>();
     }
 
-    public List<String[]> abfrage2()  {
-
-        try (Connection connection = connectionFactory.createConnection()) {
-            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = statement.executeQuery("SELECT standort.standort_id From Standort inner JOIN lager on lager.standort_id = standort.standort_id inner JOIN lagerabschnitt on lagerabschnitt.lager_id = lager.lager_id inner JOIN lagerbestand_lagerabschnitt on lagerbestand_lagerabschnitt.lagerabschnitt_id = lagerabschnitt.lagerabschnitt_id inner Join lagerbestand on lagerbestand_lagerabschnitt.lagerbestand_id = lagerbestand.lagerbestand_id inner JOIN behaelter on lagerbestand.behaelter_id = behaelter.behaelter_id where behaelter.behaeltertyp = 'Fass'");
-            return createListFromResultSet(rs);
-        } catch (SQLException e) {
-            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
-        }
-
-        return new ArrayList<>();
-    }
-
-    public List<String[]> abfrage3()  {
+    public List<String[]> abfrage3() {
 
         try (Connection connection = connectionFactory.createConnection()) {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -56,7 +67,7 @@ public class BrauereiDatabaseAccess {
         return new ArrayList<>();
     }
 
-    public List<String[]> abfrage4()  {
+    public List<String[]> abfrage4() {
 
         try (Connection connection = connectionFactory.createConnection()) {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -69,7 +80,7 @@ public class BrauereiDatabaseAccess {
         return new ArrayList<>();
     }
 
-    public List<String[]> abfrage5()  {
+    public List<String[]> abfrage5() {
 
         try (Connection connection = connectionFactory.createConnection()) {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -97,9 +108,9 @@ public class BrauereiDatabaseAccess {
             String[] columnNames = getColumnNames(metaData);
             result.add(columnNames);
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 String[] row = new String[columns];
-                for(int i = 1; i <= columns; i++){
+                for (int i = 1; i <= columns; i++) {
                     row[i - 1] = resultSet.getString(i);
                 }
                 result.add(row);

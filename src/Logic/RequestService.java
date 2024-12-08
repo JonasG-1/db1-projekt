@@ -3,6 +3,7 @@ package Logic;
 import DAO.BrauereiDatabaseAccess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RequestService {
@@ -29,6 +30,12 @@ public class RequestService {
             default -> new ArrayList<>();
         };
 
-        return output.toString();
+        StringBuilder builder = new StringBuilder();
+
+        for (String[] strings : output) {
+            builder.append(Arrays.toString(strings)).append("\n");
+        }
+
+        return builder.toString();
     }
 }
