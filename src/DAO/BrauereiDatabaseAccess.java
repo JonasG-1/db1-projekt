@@ -2,6 +2,7 @@ package DAO;
 
 import DAO.Factory.ConnectionFactory;
 import DAO.Factory.OracleConnectionFactory;
+import DAO.Model.Verpackung;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,42 +18,29 @@ public class BrauereiDatabaseAccess {
 
 
     public List<String[]> abfrage1() {
-        try (Connection connection = connectionFactory.createConnection()) {
-            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = statement.executeQuery
-                    ("SELECT BIERSORTE.BIERSORTE_ID, BIERSORTE_NAME, ZUTAT.ZUTAT_NAME " +
-                            "FROM BIERSORTE " +
-                            "INNER JOIN BIERSORTE_ZUTAT ON BIERSORTE.BIERSORTE_ID = BIERSORTE_ZUTAT.BIERSORTE_ID " +
-                            "INNER JOIN ZUTAT ON BIERSORTE_ZUTAT.ZUTAT_ID = ZUTAT.ZUTAT_ID " +
-                            "WHERE BIERSORTE.BIERSORTE_NAME = 'Pils'");
-            return createListFromResultSet(rs);
-        } catch (SQLException e) {
-            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
-        }
+        String sql = "SELECT BIERSORTE.BIERSORTE_ID, BIERSORTE_NAME, ZUTAT.ZUTAT_NAME " +
+                "FROM BIERSORTE " +
+                "INNER JOIN BIERSORTE_ZUTAT ON BIERSORTE.BIERSORTE_ID = BIERSORTE_ZUTAT.BIERSORTE_ID " +
+                "INNER JOIN ZUTAT ON BIERSORTE_ZUTAT.ZUTAT_ID = ZUTAT.ZUTAT_ID " +
+                "WHERE BIERSORTE.BIERSORTE_NAME = 'Pils'";
 
-        return new ArrayList<>();
+        return executeSqlAndGetResultList(sql);
     }
 
     public List<String[]> abfrage2() {
+        String sql = "SELECT STANDORT.STANDORT_ID " +
+                "FROM STANDORT " +
+                "INNER JOIN LAGER ON LAGER.STANDORT_ID = STANDORT.STANDORT_ID " +
+                "INNER JOIN LAGERABSCHNITT ON LAGERABSCHNITT.LAGER_ID = LAGER.LAGER_ID " +
+                "INNER JOIN LAGERBESTAND_LAGERABSCHNITT ON LAGERBESTAND_LAGERABSCHNITT.LAGERABSCHNITT_ID = LAGERABSCHNITT.LAGERABSCHNITT_ID " +
+                "INNER JOIN LAGERBESTAND on LAGERBESTAND_LAGERABSCHNITT.LAGERBESTAND_ID = LAGERBESTAND.LAGERBESTAND_ID " +
+                "INNER JOIN BEHAELTER on LAGERBESTAND.BEHAELTER_ID = BEHAELTER.BEHAELTER_ID " +
+                "WHERE BEHAELTER.BEHAELTERTYP = 'Fass'";
 
-        try (Connection connection = connectionFactory.createConnection()) {
-            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = statement.executeQuery
-                    ("SELECT STANDORT.STANDORT_ID " +
-                            "FROM STANDORT " +
-                            "INNER JOIN LAGER ON LAGER.STANDORT_ID = STANDORT.STANDORT_ID " +
-                            "INNER JOIN LAGERABSCHNITT ON LAGERABSCHNITT.LAGER_ID = LAGER.LAGER_ID " +
-                            "INNER JOIN LAGERBESTAND_LAGERABSCHNITT ON LAGERBESTAND_LAGERABSCHNITT.LAGERABSCHNITT_ID = LAGERABSCHNITT.LAGERABSCHNITT_ID " +
-                            "INNER JOIN LAGERBESTAND on LAGERBESTAND_LAGERABSCHNITT.LAGERBESTAND_ID = LAGERBESTAND.LAGERBESTAND_ID " +
-                            "INNER JOIN BEHAELTER on LAGERBESTAND.BEHAELTER_ID = BEHAELTER.BEHAELTER_ID " +
-                            "WHERE BEHAELTER.BEHAELTERTYP = 'Fass'");
-            return createListFromResultSet(rs);
-        } catch (SQLException e) {
-            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
-        }
-
-        return new ArrayList<>();
+        return executeSqlAndGetResultList(sql);
     }
+
+
 
     public List<String[]> abfrage3() {
 
@@ -85,6 +73,20 @@ public class BrauereiDatabaseAccess {
         try (Connection connection = connectionFactory.createConnection()) {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = statement.executeQuery("SELECT * FROM Biersorte");
+            return createListFromResultSet(rs);
+        } catch (SQLException e) {
+            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
+        }
+
+        return new ArrayList<>();
+    }
+
+
+
+    private List<String[]> executeSqlAndGetResultList(String sql) {
+        try (Connection connection = connectionFactory.createConnection();
+             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+             ResultSet rs = statement.executeQuery(sql)) {
             return createListFromResultSet(rs);
         } catch (SQLException e) {
             System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
@@ -130,6 +132,41 @@ public class BrauereiDatabaseAccess {
             columnNames[i - 1] = metaData.getColumnName(i);
         }
         return columnNames;
+    }
+
+    /**
+     *
+     * @param verpackung
+     * @return Id der eingefügten Verpackung oder -1, wenn nichts eingefügt wurde oder ein Fehler aufgetreten ist.
+     */
+    public int insertVerpackungTuple(Verpackung verpackung) {
+        String sql = "INSERT INTO Verpackung (VERPACKUNG_NAME, SUB_VERPACKUNG_ID, ANZAHL_EINHEITEN) VALUES (?, ?, ?)";
+        int result = -1;
+
+        try (Connection connection = connectionFactory.createConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            preparedStatement.setString(1, verpackung.getVerpackungName());
+            if (verpackung.getSubVerpackungId() == 0) {
+                preparedStatement.setNull(2, Types.INTEGER);
+            } else {
+                preparedStatement.setInt(2, verpackung.getSubVerpackungId());
+            }
+            preparedStatement.setInt(3, verpackung.getAnzahlEinheiten());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        result = generatedKeys.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Fehler bei der Abfrage: " + e);
+        }
+        return result;
     }
 
 }

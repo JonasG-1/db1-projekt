@@ -1,6 +1,7 @@
 package Logic;
 
 import DAO.BrauereiDatabaseAccess;
+import DAO.Model.Verpackung;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,5 +38,13 @@ public class RequestService {
         }
 
         return builder.toString();
+    }
+
+
+    public String insertVerpackungTuple(Verpackung verpackung) {
+        int result = brauereiDatabaseAccess.insertVerpackungTuple(verpackung);
+        return result != -1 ?
+                String.format("Die Verpackung wurde erfolgreich mit der Id %s eingefügt", result)
+                : "Die Verpackung wurde nicht eingefügt.";
     }
 }
