@@ -56,28 +56,31 @@ public class BrauereiDatabaseAccess {
 
     public List<String[]> abfrage4() {
 
-        try (Connection connection = connectionFactory.createConnection()) {
-            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = statement.executeQuery("SELECT * FROM Biersorte");
-            return createListFromResultSet(rs);
-        } catch (SQLException e) {
-            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
-        }
+        String sql = "Select lagerabschnitt.lagerabschnitt_id, lagerbedingung.temperatur " +
+                "From Lager " +
+                "inner Join Lagerabschnitt " +
+                "on lager.lager_id = lagerabschnitt.lager_id " +
+                "inner JOIN Lagerbedingung " +
+                "on lagerabschnitt.lagerbedingung_id = lagerbedingung.lagerbedingung_id " +
+                "where lager.lager_id = '1' ";
 
-        return new ArrayList<>();
+
+        return executeSqlAndGetResultList(sql);
     }
 
     public List<String[]> abfrage5() {
 
-        try (Connection connection = connectionFactory.createConnection()) {
-            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ResultSet rs = statement.executeQuery("SELECT * FROM Biersorte");
-            return createListFromResultSet(rs);
-        } catch (SQLException e) {
-            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
-        }
+        String sql = "Select Count(Lagerabschnitt.Lagerabschnitt_ID) " +
+                "From Lager " +
+                "inner Join lagerabschnitt " +
+                "on lagerabschnitt.lager_id = lager.lager_id " +
+                "inner Join lagerbedingung " +
+                "on lagerbedingung.lagerbedingung_id = lagerabschnitt.lagerbedingung_id " +
+                "where lagerbedingung.luftfeuchtigkeit <= 0.1 " +
+                "and lager.lager_id = 3";
 
-        return new ArrayList<>();
+
+        return executeSqlAndGetResultList(sql);
     }
 
 
