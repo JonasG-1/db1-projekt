@@ -20,10 +20,10 @@ public class InsertMenuState extends ConsoleState {
         currentState = UserInputState.DEFAULT;
         currentMenuOutput = """
             ---------------------------------------------------------------------------------------------------------------------------------------------------------
-                Einfügen - Bitte Befehl auswählen
+            Einfügen - Bitte Befehl auswählen
             
-                1    - Neues Tupel zur Tabelle Verpackung hinzufügen
-                exit - Zurück zum Hauptmenü
+            1    - Neues Tupel zur Tabelle Verpackung hinzufügen
+            exit - Zurück zum Hauptmenü
             ---------------------------------------------------------------------------------------------------------------------------------------------------------
             """;
     }
