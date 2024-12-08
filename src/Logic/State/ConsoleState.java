@@ -11,6 +11,11 @@ public abstract class ConsoleState {
         this.consoleApp = consoleApp;
     }
 
+    protected String exitToMainMenu() {
+        consoleApp.setConsoleAppState(new MainMenuState(consoleApp));
+        return "";
+    }
+
     public abstract String processInput(String input);
 
     public abstract String getMenuOptions();

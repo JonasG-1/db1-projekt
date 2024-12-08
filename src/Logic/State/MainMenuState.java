@@ -17,18 +17,19 @@ public class MainMenuState extends ConsoleState {
         consoleApp.setConsoleAppState(SingletonStateCollection.getInstance(RequestMenuState.class));
         return "";
     }
-    private String chooseDepthSearch() {
-        consoleApp.setConsoleAppState(SingletonStateCollection.getInstance(SearchMenuState.class));
-        return "";
-    }
 
     private String chooseInsertTupel() {
         consoleApp.setConsoleAppState(SingletonStateCollection.getInstance(InsertMenuState.class));
         return "";
     }
 
+    private String chooseDepthSearch() {
+        consoleApp.setConsoleAppState(SingletonStateCollection.getInstance(SearchMenuState.class));
+        return "";
+    }
+
     private String exitConsoleApp() {
-        System.exit(0);
+        consoleApp.setRunState(false);
         return "";
     }
 

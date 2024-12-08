@@ -18,11 +18,6 @@ public class RequestMenuState extends ConsoleState {
         this.requestService = requestService;
     }
 
-    private String exitToMainMenu() {
-        consoleApp.setConsoleAppState(new MainMenuState(consoleApp));
-        return "";
-    }
-
     @Override
     public String processInput(String input) {
         return switch (input) {

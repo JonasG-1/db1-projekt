@@ -18,6 +18,8 @@ public class ConsoleApp {
             String input = scanner.next();
             processInput(input);
         }
+
+        System.out.println("Auf Wiedersehen!");
     }
 
 
