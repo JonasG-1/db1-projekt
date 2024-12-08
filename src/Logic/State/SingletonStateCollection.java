@@ -19,7 +19,7 @@ public class SingletonStateCollection {
         consoleStates = new ArrayList<>();
         consoleStates.add(new MainMenuState(consoleApp));
         consoleStates.add(new RequestMenuState(consoleApp, requestService));
-        consoleStates.add(new InsertMenuState(consoleApp));
+        consoleStates.add(new InsertMenuState(consoleApp, requestService));
     }
 
     public static ConsoleState getInstance(Class<? extends ConsoleState> consoleStateClass) {
