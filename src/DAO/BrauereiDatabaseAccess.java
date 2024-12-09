@@ -53,7 +53,7 @@ public class BrauereiDatabaseAccess {
                 "UNION ALL " +
                 "SELECT V.VERPACKUNG_ID, V.VERPACKUNG_NAME, V.SUB_VERPACKUNG_ID " +
                 "FROM VERPACKUNG V " +
-                "INNER JOIN Verpackung_Hierarchie VH ON V.SUB_VERPACKUNG_ID = VH.VERPACKUNG_ID) " +
+                "INNER JOIN Verpackung_Hierarchie VH ON V.VERPACKUNG_ID = VH.SUB_VERPACKUNG_ID) " +
                 "SELECT DISTINCT VERPACKUNG_ID, VERPACKUNG_NAME " +
                 "FROM Verpackung_Hierarchie";
 
@@ -148,29 +148,25 @@ public class BrauereiDatabaseAccess {
      * @return Id der eingefügten Verpackung oder -1, wenn nichts eingefügt wurde oder ein Fehler aufgetreten ist.
      */
     public long insertVerpackungTuple(Verpackung verpackung) {
-        String sql = "INSERT INTO Verpackung (VERPACKUNG_NAME, SUB_VERPACKUNG_ID, ANZAHL_EINHEITEN) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Verpackung (VERPACKUNG_ID, VERPACKUNG_NAME, SUB_VERPACKUNG_ID, ANZAHL_EINHEITEN) VALUES (?, ?, ?, ?)";
         long result = -1;
 
         try (Connection connection = connectionFactory.createConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"VERPACKUNG_ID"})) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setString(1, verpackung.getVerpackungName());
+            preparedStatement.setInt(1, verpackung.getVerpackungId());
+            preparedStatement.setString(2, verpackung.getVerpackungName());
             if (verpackung.getSubVerpackungId() == 0) {
-                preparedStatement.setNull(2, Types.INTEGER);
+                preparedStatement.setNull(3, Types.INTEGER);
+                preparedStatement.setNull(4, Types.INTEGER);
             } else {
-                preparedStatement.setInt(2, verpackung.getSubVerpackungId());
+                preparedStatement.setInt(3, verpackung.getSubVerpackungId());
+                preparedStatement.setInt(4, verpackung.getAnzahlEinheiten());
             }
-            preparedStatement.setInt(3, verpackung.getAnzahlEinheiten());
 
-            int rowsAffected = preparedStatement.executeUpdate();
 
-            if (rowsAffected > 0) {
-                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        result = generatedKeys.getLong(1);
-                    }
-                }
-            }
+            result = preparedStatement.executeUpdate();
+
         } catch (SQLException e) {
             System.out.println("Fehler beim Einfügen: " + e);
         }

@@ -11,18 +11,18 @@ public class OracleConnectionFactory extends ConnectionFactory {
     private final String pass = "rWsJFsBJKN4dL662Y4UE";*/
 
     //Lokale Datenbank Jan
-
+    /*
     private final String connectionString = "jdbc:oracle:thin:@localhost:1521:xe";
     private final String user = "system";
     private final String pass = "oracle";
-
+    */
 
     //Lokale Datenbank Jonas
-    /*
+
     private final String connectionString = "jdbc:oracle:thin:@localhost:1521:xe";
     private final String user = "BRAUEREI";
     private final String pass = "oracle";
-    */
+
 
     @Override
     protected Connection createGetConnectionObject() {

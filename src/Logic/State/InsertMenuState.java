@@ -25,6 +25,7 @@ public class InsertMenuState extends ConsoleState {
 
     private enum UserInputState {
         DEFAULT,
+        ENTER_ID,
         ENTER_NAME,
         ENTER_SUB_ID,
         ENTER_QUANTITY,
@@ -41,9 +42,25 @@ public class InsertMenuState extends ConsoleState {
         verpackung = new Verpackung();
     }
 
-    private String changeStateToChooseName() {
-        changeState(UserInputState.ENTER_NAME);
+    private String changeStateToChooseId() {
+        changeState(UserInputState.ENTER_ID);
         verpackung = new Verpackung();
+        return "";
+    }
+
+    private String processEnterIdStateInput(String input) {
+        if (input.equals("abort")) {
+            resetToInitialState();
+            return "Eingabe abgebrochen. Änderungen wurden nicht gespeichert.";
+        }
+
+        try {
+            verpackung.setVerpackungId(Integer.parseInt(input));
+        } catch (NumberFormatException e) {
+            return "Die Eingabe enthielt keine Zahl: " + input;
+        }
+
+        changeState(UserInputState.ENTER_NAME);
         return "";
     }
 
@@ -63,11 +80,21 @@ public class InsertMenuState extends ConsoleState {
             return "Eingabe abgebrochen. Änderungen wurden nicht gespeichert.";
         }
 
+        int number = 0;
+
         try {
-            verpackung.setSubVerpackungId(Integer.parseInt(input));
+            number = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             return "Die Eingabe enthielt keine Zahl: " + input;
         }
+
+        if (number == 0) {
+            String result = requestService.insertVerpackungTuple(verpackung);
+            resetToInitialState();
+            return result;
+        }
+
+        verpackung.setSubVerpackungId(number);
 
         changeState(UserInputState.ENTER_QUANTITY);
         return "";
@@ -92,7 +119,7 @@ public class InsertMenuState extends ConsoleState {
 
     private String processDefaultInput(String input) {
         return switch (input) {
-            case "1" -> changeStateToChooseName();
+            case "1" -> changeStateToChooseId();
             case "exit" -> exitToMainMenu();
             default -> processWrongInput(input);
         };
@@ -102,6 +129,7 @@ public class InsertMenuState extends ConsoleState {
     public String processInput(String input) {
         return switch (currentState) {
             case DEFAULT -> processDefaultInput(input);
+            case ENTER_ID -> processEnterIdStateInput(input);
             case ENTER_NAME -> processEnterNameStateInput(input);
             case ENTER_SUB_ID -> processEnterSubIdStateInput(input);
             case ENTER_QUANTITY -> processEnterQuantityStateInput(input);
@@ -120,10 +148,11 @@ public class InsertMenuState extends ConsoleState {
 
     private void setMenuTextForCurrentState() {
         StringBuilder builder = new StringBuilder(switch (currentState) {
-            case ENTER_NAME -> "Tupel hinzufügen --- Bitte Namen eingeben.";
-            case ENTER_SUB_ID -> "Tupel hinzufügen --- Bitte VerpackungsId der enthaltenen Verpackung eingeben. " +
-                    "'0' eingeben, wenn Verpackung Behälter enthält. (SUB_VERPACKUNG_ID)";
-            case ENTER_QUANTITY -> "Tupel hinzufügen --- Bitte Anzahl der Einheiten angeben, die enthalten sein können.";
+            case ENTER_ID -> "Tupel hinzufügen --- Bitte eine Id vergeben.";
+            case ENTER_NAME -> "Tupel hinzufügen --- Bitte einen Namen eingeben.";
+            case ENTER_SUB_ID -> "Tupel hinzufügen --- Bitte VerpackungsId der enthaltenden (größeren) Verpackung eingeben. " +
+                    "'0' eingeben, wenn die Verpackung nicht weiter verpackt wird und um die Eingabe abzuschließen.";
+            case ENTER_QUANTITY -> "Tupel hinzufügen --- Bitte eingeben, wie oft diese Verpackung in die Subverpackung passt und um die Eingabe abzuschließen.";
             case DEFAULT -> DEFAULT_MENU;
         });
         if (currentState != UserInputState.DEFAULT) {

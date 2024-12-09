@@ -17,6 +17,10 @@ public class Verpackung {
         return verpackungId;
     }
 
+    public void setVerpackungId(int verpackungId) {
+        this.verpackungId = verpackungId;
+    }
+
     public int getSubVerpackungId() {
         return subVerpackungId;
     }
