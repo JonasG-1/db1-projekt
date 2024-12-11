@@ -12,22 +12,13 @@ import View.ConsoleApp;
  */
 public class InsertMenuState extends ConsoleState {
 
-    private final String DEFAULT_MENU = """
-            ---------------------------------------------------------------------------------------------------------------------------------------------------------
-            Einfügen - Bitte Befehl auswählen
-            
-            1    - Neues Tupel zur Tabelle Verpackung hinzufügen
-            exit - Zurück zum Hauptmenü
-            ---------------------------------------------------------------------------------------------------------------------------------------------------------
-            """;
-
     private String currentMenuOutput;
 
     private UserInputState currentState;
 
     private Verpackung verpackung;
 
-    private RequestService requestService;
+    private final RequestService requestService;
 
     private enum UserInputState {
         DEFAULT,
@@ -86,7 +77,7 @@ public class InsertMenuState extends ConsoleState {
             return "Eingabe abgebrochen. Änderungen wurden nicht gespeichert.";
         }
 
-        int number = 0;
+        int number;
 
         try {
             number = Integer.parseInt(input);
@@ -153,10 +144,24 @@ public class InsertMenuState extends ConsoleState {
     }
 
     private void setMenuTextForCurrentState() {
+        String DEFAULT_MENU = """
+                    ---------------------------------------------------------------------------------------------------------------------------------------------------------
+                    Einfügen - Bitte Befehl auswählen
+                    
+                    1    - Neues Tupel zur Tabelle Verpackung hinzufügen
+                    exit - Zurück zum Hauptmenü
+                    ---------------------------------------------------------------------------------------------------------------------------------------------------------
+                    """;
+
+
+        currentMenuOutput = getMenuString(DEFAULT_MENU);
+    }
+
+    private String getMenuString(String DEFAULT_MENU) {
         StringBuilder builder = new StringBuilder(switch (currentState) {
             case ENTER_ID -> "Tupel hinzufügen --- Bitte eine Id vergeben.";
             case ENTER_NAME -> "Tupel hinzufügen --- Bitte einen Namen eingeben.";
-            case ENTER_SUB_ID -> "Tupel hinzufügen --- Bitte VerpackungsId der enthaltenden (größeren) Verpackung eingeben. " +
+            case ENTER_SUB_ID -> "Tupel hinzufügen --- Bitte VerpackungId der enthaltenden (größeren) Verpackung eingeben. " +
                     "'0' eingeben, wenn die Verpackung nicht weiter verpackt wird und um die Eingabe abzuschließen.";
             case ENTER_QUANTITY -> "Tupel hinzufügen --- Bitte eingeben, wie oft diese Verpackung in die Subverpackung passt und um die Eingabe abzuschließen.";
             case DEFAULT -> DEFAULT_MENU;
@@ -164,6 +169,6 @@ public class InsertMenuState extends ConsoleState {
         if (currentState != UserInputState.DEFAULT) {
             builder.append(" \"abort\" schreiben, um abzubrechen");
         }
-        currentMenuOutput = builder.toString();
+        return builder.toString();
     }
 }

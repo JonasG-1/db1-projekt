@@ -1,6 +1,5 @@
 package Logic.State;
 
-import DAO.BrauereiDatabaseAccess;
 import Logic.RequestService;
 import View.ConsoleApp;
 
@@ -40,9 +39,9 @@ public class RequestMenuState extends ConsoleState {
                 
                 1    - 1. Gib alle Zutaten der Biersorte "Pils" aus.
                 2    - 2. Gib alle Standort IDs aus, von Standorten in denen Fässer Lagern
-                3    - 3. [Rekursiv] Gib die Verpackungsnamen der Verpakungen aus, welche die Behälter der Biersorte "Pils" enthalten.
+                3    - 3. [Rekursiv] Gib die Verpackungsnamen der Verpackungen aus, welche die Behälter der Biersorte "Pils" enthalten.
                 4    - 4. Gib ir alle Temperaturen des Lagers mit der LAGER_ID = 1.
-                5    - 5. Gib mir die Anuahl an Lagerabschnitten im Lager mit der LAGER_ID = 3, welche eine Luftfeuchtigkeit > 10% haben.
+                5    - 5. Gib mir die Anzahl an Lagerabschnitten im Lager mit der LAGER_ID = 3, welche eine Luftfeuchtigkeit > 10% haben.
                 exit - Zurück zum Hauptmenü
                 ---------------------------------------------------------------------------------------------------------------------------------------------------------
                 """;

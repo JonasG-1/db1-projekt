@@ -17,7 +17,7 @@ public class SingletonStateCollection {
 
     private static List<ConsoleState> consoleStates;
 
-    public static void createSingeltons(ConsoleApp consoleApp) {
+    public static void createSingletons(ConsoleApp consoleApp) {
         BrauereiDatabaseAccess brauereiDatabaseAccess = new BrauereiDatabaseAccess();
         RequestService requestService = new RequestService(brauereiDatabaseAccess);
 

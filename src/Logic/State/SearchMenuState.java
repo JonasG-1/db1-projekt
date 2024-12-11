@@ -1,6 +1,5 @@
 package Logic.State;
 
-import DAO.Model.Verpackung;
 import Logic.RequestService;
 import View.ConsoleApp;
 
@@ -12,20 +11,11 @@ import View.ConsoleApp;
  */
 public class SearchMenuState extends ConsoleState {
 
-    private final String DEFAULT_MENU = """
-            ---------------------------------------------------------------------------------------------------------------------------------------------------------
-            Tiefensuche - Bitte Befehl auswählen
-            
-            1    - Gesuchtes Tupel anhand ID auswählen und Suchen.
-            exit - Zurück zum Hauptmenü
-            ---------------------------------------------------------------------------------------------------------------------------------------------------------
-            """;
-
     private String currentMenuOutput;
 
     private UserInputState currentState;
 
-    private RequestService requestService;
+    private final RequestService requestService;
 
     private enum UserInputState {
         DEFAULT,
@@ -55,7 +45,7 @@ public class SearchMenuState extends ConsoleState {
             return "Eingabe abgebrochen. Änderungen wurden nicht gespeichert.";
         }
 
-        int startingTupleId = 0;
+        int startingTupleId;
 
         try {
             startingTupleId = Integer.parseInt(input);
@@ -99,6 +89,15 @@ public class SearchMenuState extends ConsoleState {
     }
 
     private void setMenuTextForCurrentState() {
+        String DEFAULT_MENU = """
+                    ---------------------------------------------------------------------------------------------------------------------------------------------------------
+                    Tiefensuche - Bitte Befehl auswählen
+
+                    1    - Gesuchtes Tupel anhand ID auswählen und Suchen.
+                    exit - Zurück zum Hauptmenü
+                    ---------------------------------------------------------------------------------------------------------------------------------------------------------
+                    """;
+
         StringBuilder builder = new StringBuilder(switch (currentState) {
             case ENTER_ID -> "Tupel hinzufügen --- Bitte die Id eingeben, von der die Suche ausgehen soll.";
             case DEFAULT -> DEFAULT_MENU;

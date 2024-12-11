@@ -1,6 +1,5 @@
 package DAO.Factory;
 
-import java.io.Closeable;
 import java.sql.Connection;
 
 /**

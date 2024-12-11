@@ -11,7 +11,6 @@ import View.ConsoleApp;
 public abstract class ConsoleState {
 
     ConsoleApp consoleApp;
-    SingletonStateCollection singletonStateCollection;
 
     public ConsoleState(ConsoleApp consoleApp) {
         this.consoleApp = consoleApp;
