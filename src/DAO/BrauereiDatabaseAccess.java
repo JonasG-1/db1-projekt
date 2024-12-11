@@ -59,7 +59,7 @@ public class BrauereiDatabaseAccess {
                 "UNION ALL " +
                 "SELECT V.VERPACKUNG_ID, V.VERPACKUNG_NAME, V.SUB_VERPACKUNG_ID " +
                 "FROM VERPACKUNG V " +
-                "INNER JOIN Verpackung_Hierarchie VH ON V.VERPACKUNG_ID = VH.SUB_VERPACKUNG_ID) " +
+                "INNER JOIN Verpackung_Hierarchie VH ON V.SUB_VERPACKUNG_ID = VH.VERPACKUNG_ID) " +
                 "SELECT DISTINCT VERPACKUNG_ID, VERPACKUNG_NAME " +
                 "FROM Verpackung_Hierarchie";
 
@@ -93,6 +93,38 @@ public class BrauereiDatabaseAccess {
 
 
         return executeSqlAndGetResultList(sql);
+    }
+
+    public List<String[]> executeDFSQuery(int startingTupleId) {
+        String sql =
+                "WITH Verpackung_Hierarchie (VERPACKUNG_ID, VERPACKUNG_NAME, SUB_VERPACKUNG_ID) " +
+                "AS (SELECT VH.VERPACKUNG_ID, VH.VERPACKUNG_NAME, VH.SUB_VERPACKUNG_ID " +
+                "FROM VERPACKUNG VH " +
+                "WHERE VH.VERPACKUNG_ID = ? " +
+                "UNION ALL " +
+                "SELECT V.VERPACKUNG_ID, V.VERPACKUNG_NAME, V.SUB_VERPACKUNG_ID " +
+                "FROM VERPACKUNG V " +
+                "INNER JOIN Verpackung_Hierarchie VH ON V.SUB_VERPACKUNG_ID = VH.VERPACKUNG_ID) " +
+                "SEARCH DEPTH FIRST BY VERPACKUNG_ID SET order1 " +
+                "SELECT VERPACKUNG_ID, VERPACKUNG_NAME, SUB_VERPACKUNG_ID " +
+                "FROM Verpackung_Hierarchie " +
+                "ORDER BY order1";
+
+        try (Connection connection = connectionFactory.createConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, startingTupleId);
+
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                return createListFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            System.out.println("Abfrage fehlgeschlagen: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        //return new ArrayList<>();
+
     }
 
 

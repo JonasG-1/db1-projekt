@@ -26,7 +26,7 @@ public class SingletonStateCollection {
         consoleStates.add(new MainMenuState(consoleApp));
         consoleStates.add(new RequestMenuState(consoleApp, requestService));
         consoleStates.add(new InsertMenuState(consoleApp, requestService));
-        consoleStates.add(new SearchMenuState(consoleApp));
+        consoleStates.add(new SearchMenuState(consoleApp, requestService));
     }
 
     /**

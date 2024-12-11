@@ -10,11 +10,8 @@ import View.ConsoleApp;
  * Jonas Goldbach, Matrikelnummer: 7217641
  * Jan Schulze, Matrikelnummer: 7217725
  */
-public class SearchMenuState extends ConsoleState{
+public class SearchMenuState extends ConsoleState {
 
-    public SearchMenuState(ConsoleApp consoleApp) {
-        super(consoleApp);
-    }
     private final String DEFAULT_MENU = """
             ---------------------------------------------------------------------------------------------------------------------------------------------------------
             Tiefensuche - Bitte Befehl auswählen
@@ -27,8 +24,6 @@ public class SearchMenuState extends ConsoleState{
     private String currentMenuOutput;
 
     private UserInputState currentState;
-
-    private Verpackung verpackung;
 
     private RequestService requestService;
 
@@ -45,14 +40,12 @@ public class SearchMenuState extends ConsoleState{
 
     private void resetToInitialState() {
         changeStates(UserInputState.DEFAULT);
-        verpackung = new Verpackung();
     }
 
 
 
     private String changeStateToChooseId() {
         changeStates(UserInputState.ENTER_ID);
-        verpackung = new Verpackung();
         return "";
     }
 
@@ -62,16 +55,18 @@ public class SearchMenuState extends ConsoleState{
             return "Eingabe abgebrochen. Änderungen wurden nicht gespeichert.";
         }
 
+        int startingTupleId = 0;
+
         try {
-            verpackung.setVerpackungId(Integer.parseInt(input));
+            startingTupleId = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             return "Die Eingabe enthielt keine Zahl: " + input;
         }
 
-        //Tiefensuche starten
+        String result = requestService.executeDFSQuery(startingTupleId);
 
         resetToInitialState();
-        return "";
+        return result;
     }
 
 
