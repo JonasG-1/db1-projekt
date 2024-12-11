@@ -1,5 +1,7 @@
 package Logic.State;
 
+import DAO.Model.Verpackung;
+import Logic.RequestService;
 import View.ConsoleApp;
 
 /**
@@ -13,20 +15,102 @@ public class SearchMenuState extends ConsoleState{
     public SearchMenuState(ConsoleApp consoleApp) {
         super(consoleApp);
     }
+    private final String DEFAULT_MENU = """
+            ---------------------------------------------------------------------------------------------------------------------------------------------------------
+            Tiefensuche - Bitte Befehl auswählen
+            
+            1    - Gesuchtes Tupel anhand ID auswählen und Suchen.
+            exit - Zurück zum Hauptmenü
+            ---------------------------------------------------------------------------------------------------------------------------------------------------------
+            """;
+
+    private String currentMenuOutput;
+
+    private UserInputState currentState;
+
+    private Verpackung verpackung;
+
+    private RequestService requestService;
+
+    private enum UserInputState {
+        DEFAULT,
+        ENTER_ID,
+    }
+
+    public SearchMenuState(ConsoleApp consoleApp, RequestService requestService) {
+        super(consoleApp);
+        resetToInitialState();
+        this.requestService = requestService;
+    }
+
+    private void resetToInitialState() {
+        changeStates(UserInputState.DEFAULT);
+        verpackung = new Verpackung();
+    }
 
 
 
-    @Override
-    public String processInput(String input) {
+    private String changeStateToChooseId() {
+        changeStates(UserInputState.ENTER_ID);
+        verpackung = new Verpackung();
+        return "";
+    }
+
+    private String processEnterIdStateInput(String input) {
+        if (input.equals("abort")) {
+            resetToInitialState();
+            return "Eingabe abgebrochen. Änderungen wurden nicht gespeichert.";
+        }
+
+        try {
+            verpackung.setVerpackungId(Integer.parseInt(input));
+        } catch (NumberFormatException e) {
+            return "Die Eingabe enthielt keine Zahl: " + input;
+        }
+
+        //Tiefensuche starten
+
+        resetToInitialState();
+        return "";
+    }
+
+
+    private String processDefaultInput(String input) {
         return switch (input) {
-            case "1" -> "";
+            case "1" -> changeStateToChooseId();
             case "exit" -> exitToMainMenu();
             default -> processWrongInput(input);
         };
     }
 
+
+
+    @Override
+    public String processInput(String input) {
+        return switch (currentState) {
+            case DEFAULT -> processDefaultInput(input);
+            case ENTER_ID -> processEnterIdStateInput(input);
+        };
+    }
+
     @Override
     public String getMenuOptions() {
-        return "";
+        return currentMenuOutput;
+    }
+
+    private void changeStates(UserInputState userInputState) {
+        currentState = userInputState;
+        setMenuTextForCurrentState();
+    }
+
+    private void setMenuTextForCurrentState() {
+        StringBuilder builder = new StringBuilder(switch (currentState) {
+            case ENTER_ID -> "Tupel hinzufügen --- Bitte die Id eingeben, von der die Suche ausgehen soll.";
+            case DEFAULT -> DEFAULT_MENU;
+        });
+        if (currentState != UserInputState.DEFAULT) {
+            builder.append(" \"abort\" schreiben, um abzubrechen");
+        }
+        currentMenuOutput = builder.toString();
     }
 }
