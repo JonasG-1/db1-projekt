@@ -8,6 +8,12 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * Autoren:
+ *
+ * Jonas Goldbach, Matrikelnummer: 7217641
+ * Jan Schulze, Matrikelnummer: 7217725
+ */
 public class ProjectView extends JFrame {
     private JTextArea resultTextArea;
     private Component rigidArea;

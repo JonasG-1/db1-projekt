@@ -4,6 +4,12 @@ import DAO.Model.Verpackung;
 import Logic.RequestService;
 import View.ConsoleApp;
 
+/**
+ * Autoren:
+ *
+ * Jonas Goldbach, Matrikelnummer: 7217641
+ * Jan Schulze, Matrikelnummer: 7217725
+ */
 public class InsertMenuState extends ConsoleState {
 
     private final String DEFAULT_MENU = """

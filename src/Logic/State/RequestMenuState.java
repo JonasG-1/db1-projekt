@@ -5,9 +5,10 @@ import Logic.RequestService;
 import View.ConsoleApp;
 
 /**
- * State Objekt, dass ... macht
+ * Autoren:
  *
- *
+ * Jonas Goldbach, Matrikelnummer: 7217641
+ * Jan Schulze, Matrikelnummer: 7217725
  */
 public class RequestMenuState extends ConsoleState {
 

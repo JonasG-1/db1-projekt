@@ -8,6 +8,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Autoren:
+ *
+ * Jonas Goldbach, Matrikelnummer: 7217641
+ * Jan Schulze, Matrikelnummer: 7217725
+ */
 public class BrauereiDatabaseAccess {
     private final ConnectionFactory connectionFactory;
 
@@ -142,11 +148,7 @@ public class BrauereiDatabaseAccess {
         return columnNames;
     }
 
-    /**
-     *
-     * @param verpackung
-     * @return Id der eingefügten Verpackung oder -1, wenn nichts eingefügt wurde oder ein Fehler aufgetreten ist.
-     */
+
     public long insertVerpackungTuple(Verpackung verpackung) {
         String sql = "INSERT INTO Verpackung (VERPACKUNG_ID, VERPACKUNG_NAME, SUB_VERPACKUNG_ID, ANZAHL_EINHEITEN) VALUES (?, ?, ?, ?)";
         long result = -1;

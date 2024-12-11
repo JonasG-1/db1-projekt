@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Autoren:
+ *
+ * Jonas Goldbach, Matrikelnummer: 7217641
+ * Jan Schulze, Matrikelnummer: 7217725
+ */
 public class RequestService {
 
     BrauereiDatabaseAccess brauereiDatabaseAccess;

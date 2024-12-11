@@ -2,6 +2,12 @@ package Logic.State;
 
 import View.ConsoleApp;
 
+/**
+ * Autoren:
+ *
+ * Jonas Goldbach, Matrikelnummer: 7217641
+ * Jan Schulze, Matrikelnummer: 7217725
+ */
 public class SearchMenuState extends ConsoleState{
 
     public SearchMenuState(ConsoleApp consoleApp) {
