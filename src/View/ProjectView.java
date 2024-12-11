@@ -11,8 +11,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * Autoren:
  *
- * Jonas Goldbach, Matrikelnummer: 7217641
- * Jan Schulze, Matrikelnummer: 7217725
+ * @author Jonas Goldbach, Matrikelnummer: 7217641
+ * @author Jan Schulze, Matrikelnummer: 7217725
  */
 public class ProjectView extends JFrame {
     private JTextArea resultTextArea;

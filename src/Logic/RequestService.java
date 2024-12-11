@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * Autoren:
  *
- * Jonas Goldbach, Matrikelnummer: 7217641
- * Jan Schulze, Matrikelnummer: 7217725
+ * @author Jonas Goldbach, Matrikelnummer: 7217641
+ * @author Jan Schulze, Matrikelnummer: 7217725
  */
 public class RequestService {
 
@@ -41,11 +41,43 @@ public class RequestService {
     }
 
     private static String getFormattedOutputFromList(List<String[]> output) {
+        if (output.isEmpty()) {
+            return "";
+        }
+
+        int[] columnWidths = new int[output.getFirst().length];
+        for (String[] row : output) {
+            for (int i = 0; i < row.length; i++) {
+                if (row[i] != null) {
+                    columnWidths[i] = Math.max(columnWidths[i], row[i].length());
+                } else {
+                    columnWidths[i] = Math.max(columnWidths[i], 4);
+                }
+            }
+        }
+
         StringBuilder builder = new StringBuilder();
 
-        for (String[] strings : output) {
-            builder.append(Arrays.toString(strings)).append("\n");
+        StringBuilder formatBuilder = new StringBuilder();
+        for (int width : columnWidths) {
+            formatBuilder.append("%-").append(width).append("s | ");
         }
+        String format = formatBuilder.toString();
+
+        // Append the header row
+        builder.append(String.format(format, (Object[]) output.getFirst())).append("\n");
+
+        // Append a separator line
+        for (int width : columnWidths) {
+            builder.append("-".repeat(width)).append("-+-");
+        }
+        builder.append("\n");
+
+        // Append the data rows
+        for (int i = 1; i < output.size(); i++) {
+            builder.append(String.format(format, (Object[]) output.get(i))).append("\n");
+        }
+
         return builder.toString();
     }
 
