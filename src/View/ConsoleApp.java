@@ -1,6 +1,8 @@
 package View;
 
 import Logic.State.ConsoleState;
+import Logic.State.MainMenuState;
+import Logic.State.SingletonStateCollection;
 
 import java.util.Scanner;
 
@@ -15,7 +17,6 @@ public class ConsoleApp {
     private ConsoleState state;
     private boolean run = true;
 
-
     public void startLoop() {
         Scanner scanner = new Scanner(System.in);
 
@@ -28,16 +29,23 @@ public class ConsoleApp {
         System.out.println("Auf Wiedersehen!");
     }
 
-
     private void processInput(String input) {
-        String output = state.processInput(input);
+        String output;
+        try {
+            output = state.processInput(input);
+        } catch (Exception e) {
+            output = "Es ist ein Fehler aufgetreten. Fehlerdetails: \n" + e.getMessage() +
+                    "\n\nDie App wurde auf das Hauptmenü zurückgesetzt, um inkonsistente Zustände zu vermeiden.\n";
+            state.resetToInitialState();
+            state = SingletonStateCollection.getInstance(MainMenuState.class);
+        }
+
         System.out.println(output);
     }
 
     private void outputMenuOptions() {
         System.out.println(state.getMenuOptions());
     }
-
 
     public void setConsoleAppState(ConsoleState state) {
         this.state = state;

@@ -28,4 +28,6 @@ public abstract class ConsoleState {
     protected String processWrongInput(String args) {
         return "Kein Befehl erkannt: " + args;
     }
+
+    public void resetToInitialState() {}
 }

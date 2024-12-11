@@ -35,10 +35,9 @@ public class OracleConnectionFactory extends ConnectionFactory {
         Connection con;
         try {
             con = DriverManager.getConnection(connectionString, user, pass);
-            System.out.println("\n[ConnectionFactory] Connection established\n");
         } catch (SQLException e) {
-            System.out.println("\n[ConnectionFactory] Failed to establish connection: \n" + e.getMessage() + "\n");
-            throw new RuntimeException();
+            throw new RuntimeException("[ConnectionFactory] Fehler beim Herstellen einer Verbindung. " +
+                    "Ist der Connection String korrekt und der Server erreichbar? - Fehlermeldung:\n" + e.getMessage(), e);
         }
         return con;
     }

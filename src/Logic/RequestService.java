@@ -43,6 +43,9 @@ public class RequestService {
         if (output.isEmpty()) {
             return "";
         }
+        if (output.size() == 1 && output.getFirst().length == 1) {
+            return output.getFirst()[0];
+        }
 
         int[] columnWidths = new int[output.getFirst().length];
         for (String[] row : output) {
@@ -82,8 +85,7 @@ public class RequestService {
 
 
     public String insertVerpackungTuple(Verpackung verpackung) {
-        long result = brauereiDatabaseAccess.insertVerpackungTuple(verpackung);
-        return result != -1 ? "Die Verpackung wurde erfolgreich eingefügt" : "Die Verpackung wurde nicht eingefügt.";
+        return brauereiDatabaseAccess.insertVerpackungTuple(verpackung);
     }
 
     public String executeDFSQuery(int startingTupleId) {

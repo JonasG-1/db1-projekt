@@ -34,10 +34,7 @@ public class InsertMenuState extends ConsoleState {
         this.requestService = requestService;
     }
 
-    private void resetToInitialState() {
-        changeState(UserInputState.DEFAULT);
-        verpackung = new Verpackung();
-    }
+
 
     private String changeStateToChooseId() {
         changeState(UserInputState.ENTER_ID);
@@ -136,6 +133,12 @@ public class InsertMenuState extends ConsoleState {
     @Override
     public String getMenuOptions() {
         return currentMenuOutput;
+    }
+
+    @Override
+    public void resetToInitialState() {
+        changeState(UserInputState.DEFAULT);
+        verpackung = new Verpackung();
     }
 
     private void changeState(UserInputState userInputState) {

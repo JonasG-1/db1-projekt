@@ -28,12 +28,6 @@ public class SearchMenuState extends ConsoleState {
         this.requestService = requestService;
     }
 
-    private void resetToInitialState() {
-        changeStates(UserInputState.DEFAULT);
-    }
-
-
-
     private String changeStateToChooseId() {
         changeStates(UserInputState.ENTER_ID);
         return "";
@@ -83,6 +77,11 @@ public class SearchMenuState extends ConsoleState {
         return currentMenuOutput;
     }
 
+    @Override
+    public void resetToInitialState() {
+        changeStates(UserInputState.DEFAULT);
+    }
+
     private void changeStates(UserInputState userInputState) {
         currentState = userInputState;
         setMenuTextForCurrentState();
@@ -99,7 +98,7 @@ public class SearchMenuState extends ConsoleState {
                     """;
 
         StringBuilder builder = new StringBuilder(switch (currentState) {
-            case ENTER_ID -> "Tupel hinzufügen --- Bitte die Id eingeben, von der die Suche ausgehen soll.";
+            case ENTER_ID -> "Bitte die Id eingeben, von der die Suche ausgehen soll.";
             case DEFAULT -> DEFAULT_MENU;
         });
         if (currentState != UserInputState.DEFAULT) {

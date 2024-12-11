@@ -49,7 +49,7 @@ public class BrauereiDatabaseAccess {
 
     public List<String[]> abfrage3() {
 
-        String sql = "WITH Verpackung_Hierarchie (VERPACKUNG_ID, VERPACKUNG_NAME, SUB_VERPACKUNG_ID) AS (" +
+        String sql = "eWITH Verpackung_Hierarchie (VERPACKUNG_ID, VERPACKUNG_NAME, SUB_VERPACKUNG_ID) AS (" +
                 "SELECT V.VERPACKUNG_ID, V.VERPACKUNG_NAME, V.SUB_VERPACKUNG_ID " +
                 "FROM BIERSORTE BS " +
                 "INNER JOIN BEHAELTER B ON BS.BIERSORTE_ID = B.BIERSORTE_ID " +
@@ -119,10 +119,9 @@ public class BrauereiDatabaseAccess {
                 return createListFromResultSet(rs);
             }
         } catch (SQLException e) {
-            System.out.println("Abfrage fehlgeschlagen: " + e.getMessage());
+            return createSingleEntryList(
+                    "[BrauereiDatabaseAccess] Die Abfrage ist fehlgeschlagen. Fehlermeldung:\n" + e.getMessage());
         }
-
-        return new ArrayList<>();
     }
 
 
@@ -133,17 +132,22 @@ public class BrauereiDatabaseAccess {
              ResultSet rs = statement.executeQuery(sql)) {
             return createListFromResultSet(rs);
         } catch (SQLException e) {
-            System.out.println("Abfrage fehlgeschlagen:" + e.getMessage());
+            return createSingleEntryList(
+                    "[BrauereiDatabaseAccess] Die Abfrage ist fehlgeschlagen. Fehlermeldung:\n" + e.getMessage());
         }
-
-        return new ArrayList<>();
     }
+
+    private List<String[]> createSingleEntryList(String entry) {
+        List<String[]> list = new ArrayList<>();
+        list.add(new String[]{entry});
+        return list;
+    }
+
 
     private List<String[]> createListFromResultSet(ResultSet resultSet) {
         List<String[]> result = new ArrayList<>();
 
         if (resultSet == null) {
-            System.out.println("Das ResultSet ist leer oder null.");
             return result;
         }
 
@@ -162,7 +166,10 @@ public class BrauereiDatabaseAccess {
                 result.add(row);
             }
         } catch (SQLException e) {
-            System.out.println("[BrauereiDatabaseAccess] Das ResultSet konnte nicht (vollständig) gelesen werden.\n" + e.getMessage());
+            return createSingleEntryList(
+                    "[BrauereiDatabaseAccess] Das ResultSet konnte nicht (vollständig) gelesen werden. " +
+                            "Fehlermeldung:\n" + e.getMessage()
+            );
         }
 
         return result;
@@ -179,9 +186,9 @@ public class BrauereiDatabaseAccess {
     }
 
 
-    public long insertVerpackungTuple(Verpackung verpackung) {
+    public String insertVerpackungTuple(Verpackung verpackung) {
         String sql = "INSERT INTO Verpackung (VERPACKUNG_ID, VERPACKUNG_NAME, SUB_VERPACKUNG_ID, ANZAHL_EINHEITEN) VALUES (?, ?, ?, ?)";
-        long result = -1;
+        String result;
 
         try (Connection connection = connectionFactory.createConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -196,11 +203,12 @@ public class BrauereiDatabaseAccess {
                 preparedStatement.setInt(4, verpackung.getAnzahlEinheiten());
             }
 
+            preparedStatement.executeUpdate();
 
-            result = preparedStatement.executeUpdate();
+            result = "[BrauereiDatabaseAccess] Die Verpackung wurde erfolgreich eingefügt.";
 
         } catch (SQLException e) {
-            System.out.println("Fehler beim Einfügen: " + e);
+            result = "[BrauereiDatabaseAccess] Fehler beim Einfügen. Fehlermeldung:\n" + e.getMessage();
         }
         return result;
     }
